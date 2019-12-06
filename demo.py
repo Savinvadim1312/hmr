@@ -40,6 +40,9 @@ flags.DEFINE_string('img_path', 'data/im1963.jpg', 'Image to run')
 flags.DEFINE_string(
     'json_path', None,
     'If specified, uses the openpose output to crop the image.')
+flags.DEFINE_string(
+    'video_name', 'test',
+    'If specified, uses the videoname.')
 
 
 def visualize(img_path, img, proc_param, joints, verts, cam, video_name):
