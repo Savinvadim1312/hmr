@@ -42,7 +42,7 @@ flags.DEFINE_string(
     'If specified, uses the openpose output to crop the image.')
 
 
-def visualize(img_path, img, proc_param, joints, verts, cam):
+def visualize(img_path, img, proc_param, joints, verts, cam, video_name):
     """
     Renders the result in original image coordinate frame.
     """
@@ -89,7 +89,7 @@ def visualize(img_path, img, proc_param, joints, verts, cam):
     plt.title('diff vp')
     plt.axis('off')
     plt.draw()
-    plt.savefig("hmr/output/images/"+os.path.splitext(os.path.basename(img_path))[0]+".png")
+    plt.savefig("hmr/output/images/"+video_name+"/"+os.path.splitext(os.path.basename(img_path))[0]+".png")
     # import ipdb
     # ipdb.set_trace()
 
@@ -120,7 +120,7 @@ def preprocess_image(img_path, json_path=None):
     return crop, proc_param, img
 
 
-def main(img_path, json_path=None):
+def main(img_path, json_path=None, video_name):
     sess = tf.Session()
     model = RunModel(config, sess=sess)
 
@@ -174,7 +174,7 @@ def main(img_path, json_path=None):
     joints_export['hip.Center_y'] = hipCenter.iloc[0][1::3].sum()/2
     joints_export['hip.Center_z'] = hipCenter.iloc[0][2::3].sum()/2
     
-    joints_export.to_csv("hmr/output/csv/"+os.path.splitext(os.path.basename(img_path))[0]+".csv")
+    joints_export.to_csv("hmr/output/csv/"+video_name+"/"+os.path.splitext(os.path.basename(img_path))[0]+".csv")
     
 #     pose = pd.DataFrame(theta[:, 3:75])
     
@@ -186,17 +186,17 @@ def main(img_path, json_path=None):
 #     rotations = [cv2.Rodrigues(aa)[0] for aa in pose.reshape(-1, 3)]
 #     print('ROTATIONS:', rotations)
     
-    visualize(img_path, img, proc_param, joints[0], verts[0], cams[0])
+    visualize(img_path, img, proc_param, joints[0], verts[0], cams[0], video_name)
 
-def join_csv():
-  path = 'hmr/output/csv/'                   
+def join_csv(video_name):
+  path = 'hmr/output/csv/'+video_name+"/"                   
   all_files = glob.glob(os.path.join(path, "*.csv"))
   all_files.sort(key=lambda x: int(x.split('/')[-1].split('.')[0]))
   df_from_each_file = (pd.read_csv(f) for f in all_files)
   concatenated_df   = pd.concat(df_from_each_file, ignore_index=True)
 
   concatenated_df['frame'] = concatenated_df.index+1
-  concatenated_df.to_csv("hmr/output/csv_joined/csv_joined.csv", index=False)
+  concatenated_df.to_csv("hmr/output/csv_joined/"+video_name+".csv", index=False)
     
 if __name__ == '__main__':
     config = flags.FLAGS
@@ -208,8 +208,8 @@ if __name__ == '__main__':
 
     renderer = vis_util.SMPLRenderer(face_path=config.smpl_face_path)
 
-    main(config.img_path, config.json_path)
+    main(config.img_path, config.json_path, config.video_name)
     
-    join_csv()
+    join_csv(config.video_name)
     
     print('\nResult is in hmr/output (you can open images in Colaboratory by double-clicking them)')
