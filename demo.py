@@ -195,7 +195,7 @@ def main(img_path, json_path=None, video_name=None):
 #     rotations = [cv2.Rodrigues(aa)[0] for aa in pose.reshape(-1, 3)]
 #     print('ROTATIONS:', rotations)
     
-    visualize(img_path, img, proc_param, joints[0], verts[0], cams[0], video_name)
+#    visualize(img_path, img, proc_param, joints[0], verts[0], cams[0], video_name)
 
 def join_csv(video_name):
   path = 'hmr/output/csv/'+video_name+"/"                   
