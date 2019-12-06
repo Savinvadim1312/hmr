@@ -92,6 +92,8 @@ def visualize(img_path, img, proc_param, joints, verts, cam, video_name):
     plt.title('diff vp')
     plt.axis('off')
     plt.draw()
+    if not os.path.exists("hmr/output/images/"+video_name):
+      os.mkdir("hmr/output/images/"+video_name)
     plt.savefig("hmr/output/images/"+video_name+"/"+os.path.splitext(os.path.basename(img_path))[0]+".png")
     # import ipdb
     # ipdb.set_trace()
@@ -176,6 +178,10 @@ def main(img_path, json_path=None, video_name=None):
     joints_export['hip.Center_x'] = hipCenter.iloc[0][::3].sum()/2
     joints_export['hip.Center_y'] = hipCenter.iloc[0][1::3].sum()/2
     joints_export['hip.Center_z'] = hipCenter.iloc[0][2::3].sum()/2
+    
+   
+    if not os.path.exists("hmr/output/csv/"+video_name):
+      os.mkdir("hmr/output/csv/"+video_name)
     
     joints_export.to_csv("hmr/output/csv/"+video_name+"/"+os.path.splitext(os.path.basename(img_path))[0]+".csv")
     
