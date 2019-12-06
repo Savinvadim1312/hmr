@@ -120,7 +120,7 @@ def preprocess_image(img_path, json_path=None):
     return crop, proc_param, img
 
 
-def main(img_path, json_path=None, video_name):
+def main(img_path, json_path=None, video_name=None):
     sess = tf.Session()
     model = RunModel(config, sess=sess)
 
